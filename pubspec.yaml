@@ -54,6 +54,7 @@ dependencies:
   rename: ^3.0.1
   provider: ^6.0.3
   injectable: ^2.1.2
+  mqtt_client: ^10.2.0
 
 dev_dependencies:
   auto_route_generator: ^6.2.0
