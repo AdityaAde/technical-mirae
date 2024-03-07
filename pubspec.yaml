@@ -55,6 +55,7 @@ dependencies:
   provider: ^6.0.3
   injectable: ^2.1.2
   mqtt_client: ^10.2.0
+  watcher: ^1.1.0
 
 dev_dependencies:
   auto_route_generator: ^6.2.0

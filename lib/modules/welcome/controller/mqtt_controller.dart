@@ -1,5 +1,8 @@
 // ignore_for_file: avoid_print
 
+import 'dart:developer';
+
+import 'package:boilerplate_flutter/component/keys.dart';
 import 'package:flutter/foundation.dart';
 import 'package:mqtt_client/mqtt_client.dart';
 import 'package:mqtt_client/mqtt_server_client.dart';
@@ -7,12 +10,13 @@ import 'package:mqtt_client/mqtt_server_client.dart';
 class MqttHandler with ChangeNotifier {
   final ValueNotifier<String> data = ValueNotifier<String>('');
   final ValueNotifier<String> isConnected = ValueNotifier<String>('');
+  final ValueNotifier<String> topicSubscribed = ValueNotifier<String>('');
   late MqttServerClient client;
 
-  Future<Object> connect() async {
+  Future<Object> connect(String topic) async {
     client = MqttServerClient.withPort(
-      'test.mosquitto.org',
-      'mqtt-explorer-10348950',
+      Keys.brokerAddress,
+      Keys.clientIdentifier,
       1883,
     );
     client.logging(on: true);
@@ -34,27 +38,26 @@ class MqttHandler with ChangeNotifier {
         .startClean()
         .withWillQos(MqttQos.atLeastOnce);
 
-    print('MQTT_LOGS::Mosquitto client connecting....');
+    log('MQTT_LOGS::Mosquitto client connecting....');
 
     client.connectionMessage = connMessage;
     try {
       await client.connect();
     } catch (e) {
-      print('Exception: $e');
+      log('Exception: $e');
       client.disconnect();
     }
 
     if (client.connectionStatus!.state == MqttConnectionState.connected) {
-      print('MQTT_LOGS::Mosquitto client connected');
+      log('MQTT_LOGS::Mosquitto client connected');
     } else {
-      print(
-          'MQTT_LOGS::ERROR Mosquitto client connection failed - disconnecting, status is ${client.connectionStatus}');
+      log('MQTT_LOGS::ERROR Mosquitto client connection failed - disconnecting, status is ${client.connectionStatus}');
       client.disconnect();
       return -1;
     }
 
-    print('MQTT_LOGS::Subscribing to the test/lol topic');
-    const topic = 'profile/adityaade';
+    log('MQTT_LOGS::Subscribing to the test/lol topic');
+
     client.subscribe(topic, MqttQos.atMostOnce);
 
     client.updates!.listen((List<MqttReceivedMessage<MqttMessage?>>? c) {
@@ -64,46 +67,42 @@ class MqttHandler with ChangeNotifier {
 
       data.value = pt;
       notifyListeners();
-      print(
-          'MQTT_LOGS:: New data arrived: topic is <${c[0].topic}>, payload is $pt');
-      print('');
+      log('MQTT_LOGS:: New data arrived: topic is <${c[0].topic}>, payload is $pt');
+      log('');
     });
 
     return client;
   }
 
   void onConnected() {
-    isConnected.value = 'Connected';
-    print('MQTT_LOGS:: Connected');
+    log('MQTT_LOGS:: Connected');
   }
 
   void onDisconnected() {
     isConnected.value = 'Disconnected';
-    print('MQTT_LOGS:: Disconnected');
+    log('MQTT_LOGS:: Disconnected');
   }
 
   void onSubscribed(String topic) {
-    print('MQTT_LOGS:: Subscribed topic: $topic');
+    isConnected.value = 'Connected';
+    log('MQTT_LOGS:: Subscribed topic: $topic');
   }
 
   void onSubscribeFail(String topic) {
-    print('MQTT_LOGS:: Failed to subscribe $topic');
+    isConnected.value = 'Failed to subscribe';
+    log('MQTT_LOGS:: Failed to subscribe $topic');
   }
 
   void onUnsubscribed(String? topic) {
-    print('MQTT_LOGS:: Unsubscribed topic: $topic');
+    log('MQTT_LOGS:: Unsubscribed topic: $topic');
   }
 
   void pong() {
-    print('MQTT_LOGS:: Ping response client callback invoked');
+    log('MQTT_LOGS:: Ping response client callback invoked');
   }
 
   void disconnect() {
     client.disconnect();
-  }
-
-  void addTopic(String topic) {
-    client.subscribe(topic, MqttQos.atMostOnce);
   }
 
   void publishMessage(String message) {
