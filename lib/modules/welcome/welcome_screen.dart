@@ -5,6 +5,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 import '../../component/theme/theme.dart';
+import '../../component/utils/utils.dart';
+import '../../gen/assets.gen.dart';
 import 'controller/mqtt_controller.dart';
 import 'widgets/widgets.dart';
 
@@ -29,46 +31,65 @@ class _WelcomePageState extends State<WelcomePage> {
   @override
   Widget build(BuildContext context) {
     final themeCubit = context.read<ThemeCubit>();
-    return Scaffold(
-      appBar: AppBar(
-        title: const Text(
-          'MQTT',
-        ),
-        centerTitle: true,
-        actions: [
-          ValueListenableBuilder<bool>(
-            valueListenable: _switchThemeController,
-            builder: (_, value, __) => CupertinoSwitch(
-                trackColor: AppColor.ink05,
-                value: value,
-                onChanged: (value) {
-                  _switchThemeController.value = value;
-                  themeCubit.setThemeMode(value);
-                }),
+    return BlocListener<ThemeCubit, ThemeState>(
+      listener: (context, state) {
+        state.maybeWhen(
+          orElse: () {},
+          success: (value) =>
+              Future.delayed(const Duration(milliseconds: 150), () {
+            AlertDialogUtil.showMyDialog(
+              context,
+              title: Assets.images.success.image(scale: 1.2),
+              body: const Text(
+                'Sukses Mengganti Tema',
+                textAlign: TextAlign.center,
+              ),
+              isDelayed: true,
+            );
+          }),
+        );
+      },
+      child: Scaffold(
+        appBar: AppBar(
+          title: const Text(
+            'MQTT',
           ),
-        ],
-      ),
-      body: ValueListenableBuilder<String>(
-        valueListenable: _mqttHandler.data,
-        builder: (_, value, __) => Padding(
-          padding: const EdgeInsets.all(16.0),
-          child: Column(
-            children: [
-              ValueListenableBuilder<String>(
-                valueListenable: _mqttHandler.isConnected,
-                builder: (_, status, __) => Text(
-                  status,
-                  style: AppStyle.materialTextStyle.bodyMedium?.copyWith(
-                    color: status == 'Connected'
-                        ? AppColor.green
-                        : AppColor.utilityDangerError,
+          centerTitle: true,
+          actions: [
+            ValueListenableBuilder<bool>(
+              valueListenable: _switchThemeController,
+              builder: (_, value, __) => CupertinoSwitch(
+                  trackColor: AppColor.ink05,
+                  value: value,
+                  onChanged: (value) {
+                    _switchThemeController.value = value;
+                    themeCubit.setThemeMode(value);
+                  }),
+            ),
+          ],
+        ),
+        body: ValueListenableBuilder<String>(
+          valueListenable: _mqttHandler.data,
+          builder: (_, value, __) => Padding(
+            padding: const EdgeInsets.all(16.0),
+            child: Column(
+              children: [
+                ValueListenableBuilder<String>(
+                  valueListenable: _mqttHandler.isConnected,
+                  builder: (_, status, __) => Text(
+                    status,
+                    style: AppStyle.materialTextStyle.bodyMedium?.copyWith(
+                      color: status == 'Connected'
+                          ? AppColor.green
+                          : AppColor.utilityDangerError,
+                    ),
                   ),
                 ),
-              ),
-              ConnectInputWidget(mqttHandler: _mqttHandler),
-              ConnectButtonWidget(mqttHandler: _mqttHandler),
-              Text(value)
-            ],
+                ConnectInputWidget(mqttHandler: _mqttHandler),
+                ConnectButtonWidget(mqttHandler: _mqttHandler),
+                Text(value)
+              ],
+            ),
           ),
         ),
       ),

@@ -63,7 +63,6 @@ android {
 
     flavorDimensions "app"
     productFlavors {
-
         development {
             dimension "app"
             applicationIdSuffix ".dev"

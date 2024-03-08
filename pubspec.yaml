@@ -55,7 +55,6 @@ dependencies:
   provider: ^6.0.3
   injectable: ^2.1.2
   mqtt_client: ^10.2.0
-  watcher: ^1.1.0
 
 dev_dependencies:
   auto_route_generator: ^6.2.0
@@ -78,38 +77,5 @@ flutter_gen:
 
 flutter:
   uses-material-design: true
-  # To add assets to your application, add an assets section, like this:
-  # assets:
-  #   - assets/images/
-  #   - assets/icons/
-  #   - google_fonts/
-
-  # fonts:
-  #   - family: PlusJakartaSans
-  #     fonts:
-  #       - asset: google_fonts/PlusJakartaSans-Italic-VariableFont_wght.ttf
-  #         weight: 400
-  #       - asset: google_fonts/PlusJakartaSans-VariableFont_wght.ttf
-  #         style: italic
-  #         weight: 400
-# Enable if want to used
-# flutter_icons:
-#   android: "launcher_icon"
-#   ios: true
-#   remove_alpha_ios: true
-#   image_path_ios: "assets/app/ic_launcher_ios.png"
-#   image_path_android: "assets/app/ic_launcher.png"
-#   adaptive_icon_background: "#ffffff"
-#   adaptive_icon_foreground: "assets/app/ic_launcher.png"
-# flutter_native_splash:
-#   color: "#F5F5F5"
-#   image: assets/app/il_hero.png
-#   branding: assets/app/ic_branding.png
-#   branding_mode: bottom
-#   android_12:
-#     color: "#F5F5F5"
-#   android: true
-#   ios: false
-#   web: false
-#   android_gravity: center
-#   fullscreen: true
+  assets:
+    - assets/images/
