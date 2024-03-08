@@ -20,18 +20,6 @@ class ConnectButtonWidget extends StatelessWidget {
         children: [
           Expanded(
             child: ElevatedButton(
-              style: ElevatedButton.styleFrom(backgroundColor: AppColor.green),
-              onPressed: () =>
-                  mqttHandler.connect(mqttHandler.topicSubscribed.value),
-              child: const Text(
-                'Connect',
-                style: TextStyle(color: AppColor.ink06),
-              ),
-            ),
-          ),
-          SizedBox(width: 12.w),
-          Expanded(
-            child: ElevatedButton(
               style: ElevatedButton.styleFrom(
                 backgroundColor: AppColor.utilityDangerError,
               ),
@@ -41,7 +29,19 @@ class ConnectButtonWidget extends StatelessWidget {
                 style: TextStyle(color: AppColor.ink06),
               ),
             ),
-          )
+          ),
+          SizedBox(width: 12.w),
+          Expanded(
+            child: ElevatedButton(
+              style: ElevatedButton.styleFrom(backgroundColor: AppColor.green),
+              onPressed: () =>
+                  mqttHandler.connect(mqttHandler.topicSubscribed.value),
+              child: const Text(
+                'Connect',
+                style: TextStyle(color: AppColor.ink06),
+              ),
+            ),
+          ),
         ],
       ),
     );

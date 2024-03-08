@@ -12,7 +12,7 @@ void runMainApp() async {
       WidgetsFlutterBinding.ensureInitialized();
       await Hive.initFlutter();
       await Injector.create();
-      runApp(App());
+      runApp(const App());
     },
     (error, stack) => debugPrint('error $error, $stack'),
   );
